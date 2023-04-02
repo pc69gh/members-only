@@ -1,10 +1,13 @@
 /** @type {import('next').NextConfig} */
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const withFonts = require('nextjs-fonts');
+
 const nextConfig = {
   eslint: {
     dirs: ['src'],
   },
 
-  reactStrictMode: true,
+  reactStrictMode: false,
   swcMinify: true,
 
   // Uncoment to add domain whitelist
@@ -34,4 +37,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withFonts(nextConfig);

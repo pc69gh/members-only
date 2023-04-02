@@ -50,6 +50,10 @@ export default {
         flicker: 'flicker 3s linear infinite',
         shimmer: 'shimmer 1.3s linear infinite',
       },
+      boxShadow: {
+        win95:
+          'inset 2px 2px 0px #262626, inset -2px -2px 0px #F0F0F0, inset 4px 4px 0px #7E7E7E',
+      },
     },
   },
   plugins: [require('@tailwindcss/forms')],
