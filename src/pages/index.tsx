@@ -1,3 +1,4 @@
+import { useUser } from '@auth0/nextjs-auth0/client';
 import React from 'react';
 import { styleReset } from 'react95';
 // original Windows95 font (optionally)
@@ -31,13 +32,14 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 const App = () => {
+  const { user, error, isLoading } = useUser();
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>{error.message}</div>;
   return (
     <MenuProvider>
       <GlobalStyles />
       <ThemeProvider theme={original}>
-        <Layout>
-          <Chat />
-        </Layout>
+        <Layout>{user && <Chat />}</Layout>
       </ThemeProvider>
     </MenuProvider>
   );
