@@ -1,4 +1,4 @@
-import { useUser } from '@auth0/nextjs-auth0/client';
+import { getSession, Session, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import React from 'react';
 import { styleReset } from 'react95';
 // original Windows95 font (optionally)
@@ -7,6 +7,7 @@ import ms_sans_serif_bold from 'react95/dist/fonts/ms_sans_serif_bold.woff2';
 // pick a theme of your choice
 import original from 'react95/dist/themes/original';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
+import { getSupabase } from 'utils/supabase';
 
 import { Chat } from '@/components/Chat';
 import { MenuProvider } from '@/components/context/Menu';
@@ -31,18 +32,45 @@ const GlobalStyles = createGlobalStyle`
   }
 `;
 
-const App = () => {
-  const { user, error, isLoading } = useUser();
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>{error.message}</div>;
+const App = ({
+  messages,
+}: {
+  messages: {
+    user: string;
+    message: string;
+  }[];
+}) => {
   return (
     <MenuProvider>
       <GlobalStyles />
       <ThemeProvider theme={original}>
-        <Layout>{user && <Chat />}</Layout>
+        <Layout>
+          <Chat messages={messages} />
+        </Layout>
       </ThemeProvider>
     </MenuProvider>
   );
 };
+
+export const getServerSideProps = withPageAuthRequired({
+  async getServerSideProps({ req, res }) {
+    const {
+      user: { accessToken },
+    } = (await getSession(req, res)) as Session;
+
+    const supabase = getSupabase(accessToken);
+
+    const { data: rows } = await supabase.from('messages').select('*');
+
+    return {
+      props: {
+        messages: rows?.map((row) => ({
+          user: row.user_id.slice(-16),
+          message: row.content,
+        })),
+      },
+    };
+  },
+});
 
 export default App;

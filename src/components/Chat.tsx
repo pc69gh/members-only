@@ -1,7 +1,7 @@
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import classNames from 'classnames';
 import Image from 'next/image';
-import { createRef, useCallback, useState } from 'react';
+import { createRef, useCallback } from 'react';
 import Draggable from 'react-draggable';
 import { Button, Toolbar, Window, WindowContent, WindowHeader } from 'react95';
 
@@ -9,50 +9,26 @@ import { useMenuContext } from '@/components/context/Menu';
 
 const CURRENT_USER = 'yeastbeast.eth';
 
-const MESSAGES = [
-  {
-    user: 'glutenyeee.eth',
-    message: "Somebody ate breadgetter's bread lmao",
-  },
-  {
-    user: 'breadgetter.eth',
-    message: 'Naw who ate my bread??',
-  },
-  {
-    user: 'yeastbeast.eth',
-    message: ':bread: :bread: :bread: :bread: :bread: :bread:',
-  },
-];
-
-const Message = ({
-  user,
-  message,
-  ...props
-}: {
-  user: string;
-  message: string;
-}) => {
+const Message = ({ user, message }: { user: string; message: string }) => {
   const parsed = message.split(' ').map((word, i) => {
     if (word.startsWith(':') && word.endsWith(':')) {
       const emoji = word.slice(1, -1);
       return (
-        <>
-          <span key={`${user}-${emoji}-${i}`} role='img' aria-label={emoji}>
-            <Image
-              src={`/images/${emoji}.png`}
-              alt={emoji}
-              width={20}
-              height={20}
-              className='inline-block'
-            />
-          </span>{' '}
-        </>
+        <span key={`${user}-${emoji}-${i}`} role='img' aria-label={emoji}>
+          <Image
+            src={`/images/${emoji}.png`}
+            alt={emoji}
+            width={20}
+            height={20}
+            className='inline-block'
+          />{' '}
+        </span>
       );
     }
     return word + ' ';
   });
   return (
-    <div className='flex' {...props}>
+    <div className='flex'>
       <div
         className={classNames('mr-2 font-bold', {
           'text-blue-500': user === CURRENT_USER,
@@ -68,28 +44,38 @@ const Message = ({
 const ChatWindow = ({
   messages,
 }: {
-  messages: { user: string; message: string }[];
+  messages?: { user: string; message: string }[];
 }) => (
   <div className='shadow-win95 flex h-[400px] flex-col space-y-1 overflow-y-scroll bg-white px-3 py-2'>
-    {messages.map((message, i) => (
-      <Message key={`${message.user}-${i}-${message.message}`} {...message} />
+    {messages?.map((message, i) => (
+      <div key={i}>
+        <Message {...message} />
+      </div>
     ))}
   </div>
 );
 
-export const Chat = () => {
+export const Chat = ({
+  messages,
+}: {
+  messages: {
+    user: string;
+    message: string;
+  }[];
+}) => {
   const { chatVisible, setChatVisible } = useMenuContext();
   const inputRef = createRef<HTMLInputElement>();
-  const [messages, setMessages] = useState(MESSAGES);
   const sendMessage = useCallback(() => {
     if (!inputRef.current) return;
 
-    const inputTest = inputRef.current.value;
+    const inputValue = inputRef.current.value;
     inputRef.current.value = '';
-    setMessages((messages) => [
-      ...messages,
-      { user: CURRENT_USER, message: inputTest },
-    ]);
+    // setMessages((messages) => [
+    //   ...messages,
+    //   { user: CURRENT_USER, message: inputValue },
+    // ]);
+    // eslint-disable-next-line no-console
+    console.log(inputValue);
   }, [inputRef]);
   return (
     <div
