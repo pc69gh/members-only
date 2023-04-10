@@ -3,6 +3,8 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { AppBar, Button, MenuList, MenuListItem, Toolbar } from 'react95';
 
+import { useHasBread } from '@/hooks/useHasBread';
+
 import { useMenuContext } from '@/components/context/Menu';
 
 export const Menu = () => {
@@ -10,6 +12,8 @@ export const Menu = () => {
   const { user } = useUser();
 
   const { setChatVisible } = useMenuContext();
+
+  const hasBread = useHasBread();
 
   const handleChatClick = () => {
     setChatVisible(true);
@@ -39,10 +43,10 @@ export const Menu = () => {
         </Toolbar>
       </AppBar>
       {open && (
-        <div className='absolute top-12' onClick={handleChatClick}>
+        <div className='absolute top-12'>
           <MenuList>
-            {user && (
-              <MenuListItem>
+            {user && hasBread && (
+              <MenuListItem onClick={handleChatClick}>
                 <Image
                   src='/images/bread.png'
                   alt='bread'
