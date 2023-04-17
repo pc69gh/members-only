@@ -46,9 +46,20 @@ export const Message = ({
   if (isLoading || error) return null;
 
   return (
-    <div className='flex h-[20px] items-center'>
+    <div className='flex h-[20px] items-center space-x-2'>
+      {auth0User?.picture && (
+        <Image
+          role='img'
+          src={auth0User?.picture}
+          aria-label={`${user} avatar`}
+          alt={`${user} avatar`}
+          width={20}
+          height={20}
+          className='inline-block'
+        />
+      )}
       <div
-        className={classNames('mr-2 font-bold', {
+        className={classNames('font-bold', {
           'text-blue-500': user === auth0User?.nickname,
         })}
       >
