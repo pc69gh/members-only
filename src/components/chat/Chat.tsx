@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import Image from 'next/image';
 import { useRef } from 'react';
 import Draggable from 'react-draggable';
-import { Button, Toolbar, Window, WindowContent, WindowHeader } from 'react95';
+import { Button, Window, WindowContent, WindowHeader } from 'react95';
 
 import { useSendMessage } from '@/hooks/useSendMessage';
 import { useSetEmoji } from '@/hooks/useSetEmoji';
@@ -19,7 +19,7 @@ export const Chat = ({
     message: string;
   }[];
 }) => {
-  const { chatVisible, setChatVisible } = useMenuContext();
+  const { chatVisible, setChatVisible, setChatRunning } = useMenuContext();
 
   const inputRef = useRef<HTMLInputElement>(null);
   const sendMessage = useSendMessage(inputRef);
@@ -31,25 +31,20 @@ export const Chat = ({
         hidden: !chatVisible,
       })}
     >
-      <Draggable defaultPosition={{ x: 220, y: 150 }} handle='.handle'>
+      <Draggable defaultPosition={{ x: 220, y: 150 }} handle='.window-title '>
         <Window className='window'>
           <WindowHeader className='window-title flex justify-between'>
             <span>Bread Chat.exe</span>
-            <Button size='sm' onClick={() => setChatVisible(false)}>
-              <XMarkIcon className='h-5 w-5' />
-            </Button>
+            <div className='flex space-x-1'>
+              <Button size='sm' onClick={() => setChatVisible(false)}>
+                <span className='text-xl'>-</span>
+              </Button>
+              <Button size='sm' onClick={() => setChatRunning(false)}>
+                <XMarkIcon className='h-5 w-5' />
+              </Button>
+            </div>
           </WindowHeader>
-          <Toolbar className='handle'>
-            <Button variant='menu' size='sm'>
-              File
-            </Button>
-            <Button variant='menu' size='sm'>
-              Edit
-            </Button>
-            <Button variant='menu' size='sm' disabled>
-              Save
-            </Button>
-          </Toolbar>
+
           <WindowContent className='w-[600px]'>
             <ChatWindow messages={messages} />
             <form className='mt-2 flex' onSubmit={sendMessage}>

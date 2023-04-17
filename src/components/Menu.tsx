@@ -11,20 +11,16 @@ export const Menu = () => {
   const [open, setOpen] = useState(false);
   const { user } = useUser();
 
-  const { setChatVisible } = useMenuContext();
+  const { setChatVisible, chatVisible, chatRunning, setChatRunning } =
+    useMenuContext();
 
   const hasBread = useHasBread();
-
-  const handleChatClick = () => {
-    setChatVisible(true);
-    setOpen(false);
-  };
 
   return (
     <>
       <AppBar>
-        <Toolbar style={{ justifyContent: 'space-between' }}>
-          <div style={{ position: 'relative', display: 'inline-block' }}>
+        <Toolbar className='space-between'>
+          <div className='relative flex space-x-2'>
             <Button
               onClick={() => setOpen(!open)}
               active={open}
@@ -39,6 +35,22 @@ export const Menu = () => {
               />
               Start
             </Button>
+            {chatRunning && (
+              <Button
+                onClick={() => setChatVisible(!chatVisible)}
+                active={chatVisible}
+                style={{ fontWeight: 'bold' }}
+              >
+                <Image
+                  src='/images/bread.png'
+                  alt='bread'
+                  style={{ width: '20px', marginRight: 6 }}
+                  width={36}
+                  height={25}
+                />
+                Bread Chat
+              </Button>
+            )}
           </div>
         </Toolbar>
       </AppBar>
@@ -46,7 +58,12 @@ export const Menu = () => {
         <div className='absolute top-12'>
           <MenuList>
             {user && hasBread && (
-              <MenuListItem onClick={handleChatClick}>
+              <MenuListItem
+                onClick={() => {
+                  setChatRunning(true);
+                  setOpen(false);
+                }}
+              >
                 <Image
                   src='/images/bread.png'
                   alt='bread'
