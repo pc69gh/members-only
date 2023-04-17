@@ -4,6 +4,7 @@ import {
   Session,
   withPageAuthRequired,
 } from '@auth0/nextjs-auth0';
+import jwt from 'jsonwebtoken';
 import React, { useEffect } from 'react';
 import { styleReset } from 'react95';
 // original Windows95 font (optionally)
@@ -41,19 +42,21 @@ const GlobalStyles = createGlobalStyle`
 const App = ({
   messages,
   user,
+  authorized,
 }: {
   messages: {
     user: string;
     message: string;
   }[];
   user: Claims;
+  authorized: boolean;
 }) => {
   const [rows, setRows] = React.useState(messages);
 
   const [error, setError] = React.useState<string>();
 
   useEffect(() => {
-    if (!user.accessToken.userId) {
+    if (!authorized) {
       setError('you have no $bread or $cinnabunz. please act accordingly.');
       return;
     }
@@ -80,7 +83,7 @@ const App = ({
         )
         .subscribe();
     })();
-  }, [user.accessToken]);
+  }, [authorized, user.accessToken]);
 
   return (
     <MenuProvider>
@@ -101,6 +104,8 @@ const App = ({
 export const getServerSideProps = withPageAuthRequired({
   async getServerSideProps({ req, res }) {
     const session = (await getSession(req, res)) as Session;
+    const claims = jwt.decode(session.user.accessToken);
+    const authorized = !!claims && !!(claims as jwt.JwtPayload).userId;
 
     const supabase = getSupabase(session.user.accessToken);
 
@@ -110,6 +115,7 @@ export const getServerSideProps = withPageAuthRequired({
       return {
         props: {
           messages: [],
+          authorized,
         },
       };
     }
@@ -120,6 +126,7 @@ export const getServerSideProps = withPageAuthRequired({
           user: row.address,
           message: row.content,
         })),
+        authorized,
       },
     };
   },
