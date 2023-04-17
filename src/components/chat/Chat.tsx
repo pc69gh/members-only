@@ -20,7 +20,6 @@ export const Chat = ({
   }[];
 }) => {
   const { chatVisible, setChatVisible, setChatRunning } = useMenuContext();
-  const resizeRef = useRef<HTMLSpanElement>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const sendMessage = useSendMessage(inputRef);
@@ -33,7 +32,7 @@ export const Chat = ({
       })}
     >
       <Draggable defaultPosition={{ x: 220, y: 150 }} handle='.window-title '>
-        <Window className='window' shadow resizable resizeRef={resizeRef}>
+        <Window className='window resize' shadow>
           <WindowHeader className='window-title flex justify-between'>
             <span>Bread Chat.exe</span>
             <div className='flex space-x-1'>

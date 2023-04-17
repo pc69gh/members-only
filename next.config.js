@@ -11,9 +11,9 @@ const nextConfig = {
   swcMinify: true,
 
   // Uncoment to add domain whitelist
-  images: {
-    domains: ['i.postimg.cc'],
-  },
+  // images: {
+  //   domains: [],
+  // },
 
   // SVGR
   webpack(config) {
