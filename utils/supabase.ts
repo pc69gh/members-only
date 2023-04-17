@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 // utils/supabase.js
 
 import { createClient } from '@supabase/supabase-js';
@@ -13,12 +14,18 @@ const getSupabase = (access_token: any) => {
         Authorization: `Bearer ${access_token}`,
       },
     };
+    options.realtime = {
+      headers: {
+        apikey: access_token, // custom token with 'authenticated' role signed with jwt secret
+      },
+      params: {
+        apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, // supabase anon key
+      },
+    };
   }
 
   const supabase = createClient(
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     options
   );

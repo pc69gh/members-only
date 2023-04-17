@@ -1,6 +1,10 @@
-import { getSession, Session, withPageAuthRequired } from '@auth0/nextjs-auth0';
+import {
+  Claims,
+  getSession,
+  Session,
+  withPageAuthRequired,
+} from '@auth0/nextjs-auth0';
 import React, { useEffect } from 'react';
-import { useCookies } from 'react-cookie';
 import { styleReset } from 'react95';
 // original Windows95 font (optionally)
 import ms_sans_serif from 'react95/dist/fonts/ms_sans_serif.woff2';
@@ -10,6 +14,7 @@ import original from 'react95/dist/themes/original';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import { getSupabase } from 'utils/supabase';
 
+import { BSOD } from '@/components/BSOD';
 import { Chat } from '@/components/chat/Chat';
 import { MenuProvider } from '@/components/context/Menu';
 import Layout from '@/components/layout/Layout';
@@ -35,21 +40,29 @@ const GlobalStyles = createGlobalStyle`
 
 const App = ({
   messages,
+  user,
 }: {
   messages: {
     user: string;
     message: string;
   }[];
+  user: Claims;
 }) => {
   const [rows, setRows] = React.useState(messages);
 
-  const [cookies] = useCookies(['appSession']);
-  const supabase = getSupabase(cookies.appSession);
+  const [error, setError] = React.useState<string>();
 
   useEffect(() => {
+    if (!user.accessToken.userId) {
+      setError('you have no $bread or $cinnabunz. please act accordingly.');
+      return;
+    }
+
+    const supabase = getSupabase(user.accessToken);
     (async () => {
-      supabase
-        .channel('custom-insert-channel')
+      const channel = supabase.channel('custom-insert-channel');
+      channel.socket.accessToken = user.accessToken;
+      channel
         .on(
           'postgres_changes',
           { event: 'INSERT', schema: 'public', table: 'messages' },
@@ -67,16 +80,19 @@ const App = ({
         )
         .subscribe();
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user.accessToken]);
 
   return (
     <MenuProvider>
       <GlobalStyles />
       <ThemeProvider theme={original}>
-        <Layout>
-          <Chat messages={rows} />
-        </Layout>
+        {error ? (
+          <BSOD message={error} />
+        ) : (
+          <Layout>
+            <Chat messages={rows} />
+          </Layout>
+        )}
       </ThemeProvider>
     </MenuProvider>
   );
@@ -84,13 +100,13 @@ const App = ({
 
 export const getServerSideProps = withPageAuthRequired({
   async getServerSideProps({ req, res }) {
-    const { user } = (await getSession(req, res)) as Session;
+    const session = (await getSession(req, res)) as Session;
 
-    const supabase = getSupabase(user.accessToken);
+    const supabase = getSupabase(session.user.accessToken);
 
-    const { data: rows } = await supabase.from('messages').select('*');
+    const all = await supabase.from('messages').select('*');
 
-    if (!rows) {
+    if (!all.data) {
       return {
         props: {
           messages: [],
@@ -100,7 +116,7 @@ export const getServerSideProps = withPageAuthRequired({
 
     return {
       props: {
-        messages: rows?.map((row) => ({
+        messages: all.data?.map((row) => ({
           user: row.address,
           message: row.content,
         })),

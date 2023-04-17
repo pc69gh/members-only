@@ -8,9 +8,10 @@ export default async function handler(
 ) {
   const { user } = (await getSession(req, res)) as Session;
   const supabase = getSupabase(user.accessToken);
+  const content = JSON.parse(req.body).message;
   const { data, error } = await supabase.from('messages').insert([
     {
-      content: req.body.message,
+      content,
       user_id: user.sub,
       address: user.nickname,
     },

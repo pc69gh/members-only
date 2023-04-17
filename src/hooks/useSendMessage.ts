@@ -14,10 +14,6 @@ export const useSendMessage = (inputRef: RefObject<HTMLInputElement>) => {
           body: JSON.stringify({
             message: inputValue,
           }),
-          headers: new Headers({
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-          }),
         });
         if (!resp.ok) {
           const reader = resp.body?.getReader();
