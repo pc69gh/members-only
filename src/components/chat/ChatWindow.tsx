@@ -1,11 +1,15 @@
 import { createRef, useEffect } from 'react';
 
+import { Message as MessageType } from '@/hooks/useChatSubscribe';
+
 import { Message } from '@/components/chat/Message';
 
 export const ChatWindow = ({
   messages,
+  bucket,
 }: {
-  messages?: { user: string; message: string }[];
+  messages?: MessageType[];
+  bucket: string;
 }) => {
   const textArea = createRef<HTMLDivElement>();
   useEffect(() => {
@@ -20,7 +24,7 @@ export const ChatWindow = ({
     >
       {messages?.map((message, i) => (
         <div key={i}>
-          <Message {...message} />
+          <Message {...message} bucket={bucket} />
         </div>
       ))}
     </div>

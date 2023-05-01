@@ -3,8 +3,7 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getSupabase = (access_token: any) => {
+const getSupabase = (access_token: string, auth0Token: string) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const options: any = {};
 
@@ -16,7 +15,7 @@ const getSupabase = (access_token: any) => {
     };
     options.realtime = {
       headers: {
-        apikey: access_token, // custom token with 'authenticated' role signed with jwt secret
+        apikey: auth0Token, // custom token with 'authenticated' role signed with jwt secret
       },
       params: {
         apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, // supabase anon key

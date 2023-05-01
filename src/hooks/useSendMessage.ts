@@ -1,34 +1,47 @@
+import { useUser } from '@auth0/nextjs-auth0/client';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { RefObject, useCallback } from 'react';
 
-export const useSendMessage = (inputRef: RefObject<HTMLInputElement>) => {
+export const useSendMessage = (
+  inputRef: RefObject<HTMLInputElement>,
+  table: string,
+  attachment: string | null
+) => {
+  const supabase = useSupabaseClient();
+  const { user: auth0User, error, isLoading } = useUser();
   return useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      if (!inputRef.current) return;
+      if (!inputRef.current || error || isLoading) return;
       const inputValue = inputRef.current.value;
       inputRef.current.value = '';
 
       (async () => {
-        const resp = await fetch('/api/message/send', {
-          method: 'POST',
-          body: JSON.stringify({
-            message: inputValue,
-          }),
-        });
-        if (!resp.ok) {
-          const reader = resp.body?.getReader();
-          if (reader) {
-            const { value } = await reader.read();
-            const decoder = new TextDecoder('utf-8');
-            const val = decoder.decode(value);
-            const code = JSON.parse(val).code;
-            if (code === 'PGRST301') {
-              window.location.href = '/api/auth/logout';
-            }
+        const { error } = await supabase.from(table).insert([
+          {
+            content: inputValue,
+            user_id: auth0User?.sub,
+            address: auth0User?.nickname,
+            attachment: attachment,
+          },
+        ]);
+        if (error) {
+          const code = error.code;
+          if (code === 'PGRST301') {
+            window.location.href = '/api/auth/logout';
           }
         }
       })();
     },
-    [inputRef]
+    [
+      attachment,
+      auth0User?.nickname,
+      auth0User?.sub,
+      error,
+      inputRef,
+      isLoading,
+      supabase,
+      table,
+    ]
   );
 };

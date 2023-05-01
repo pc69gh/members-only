@@ -1,11 +1,15 @@
 import {
-  Claims,
   getSession,
-  Session,
+  Session as Auth0Session,
   withPageAuthRequired,
 } from '@auth0/nextjs-auth0';
+import {
+  Session as SubabaseSession,
+  SessionContextProvider,
+} from '@supabase/auth-helpers-react';
+import { createClient } from '@supabase/supabase-js';
 import jwt from 'jsonwebtoken';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { styleReset } from 'react95';
 // original Windows95 font (optionally)
 import ms_sans_serif from 'react95/dist/fonts/ms_sans_serif.woff2';
@@ -40,93 +44,73 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 const App = ({
-  messages,
-  user,
   authorized,
+  session,
+  auth0Token,
 }: {
-  messages: {
-    user: string;
-    message: string;
-  }[];
-  user: Claims;
   authorized: boolean;
+  session: SubabaseSession;
+  auth0Token: string;
 }) => {
-  const [rows, setRows] = React.useState(messages);
-
-  const [error, setError] = React.useState<string>();
-
-  useEffect(() => {
-    if (!authorized) {
-      setError('you have no $bread or $cinnabunz. please act accordingly.');
-      return;
-    }
-
-    const supabase = getSupabase(user.accessToken);
-    (async () => {
-      const channel = supabase.channel('custom-insert-channel');
-      channel.socket.accessToken = user.accessToken;
-      channel
-        .on(
-          'postgres_changes',
-          { event: 'INSERT', schema: 'public', table: 'messages' },
-          (payload) => {
-            if (payload.new) {
-              setRows((prev) => [
-                ...prev,
-                {
-                  user: payload.new.address,
-                  message: payload.new.content,
-                },
-              ]);
-            }
-          }
-        )
-        .subscribe();
-    })();
-  }, [authorized, user.accessToken]);
+  const supabase = getSupabase(session?.access_token || '', auth0Token);
 
   return (
-    <MenuProvider>
-      <GlobalStyles />
-      <ThemeProvider theme={original}>
-        {error ? (
-          <BSOD message={error} />
-        ) : (
-          <Layout>
-            <Chat messages={rows} />
-          </Layout>
-        )}
-      </ThemeProvider>
-    </MenuProvider>
+    <SessionContextProvider supabaseClient={supabase} initialSession={session}>
+      <MenuProvider>
+        <GlobalStyles />
+        <ThemeProvider theme={original}>
+          {!authorized ? (
+            <BSOD message='you have no $bread, $cinnabunz or $lawb. please act accordingly.' />
+          ) : (
+            <Layout>
+              <Chat type='bread' auth0Token={auth0Token} />
+              {/* <Chat type='lawb' /> */}
+            </Layout>
+          )}
+        </ThemeProvider>
+      </MenuProvider>
+    </SessionContextProvider>
   );
 };
 
 export const getServerSideProps = withPageAuthRequired({
   async getServerSideProps({ req, res }) {
-    const session = (await getSession(req, res)) as Session;
-    const claims = jwt.decode(session.user.accessToken);
+    const auth0Session = (await getSession(req, res)) as Auth0Session;
+    const claims = jwt.decode(auth0Session.user.accessToken);
     const authorized = !!claims && !!(claims as jwt.JwtPayload).userId;
 
-    const supabase = getSupabase(session.user.accessToken);
+    const supabase = createClient(
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
 
-    const all = await supabase.from('messages').select('*');
+    let session;
 
-    if (!all.data) {
-      return {
-        props: {
-          messages: [],
-          authorized,
-        },
-      };
+    const signinResult = await supabase.auth.signInWithPassword({
+      email: `${auth0Session.user.sub}@email.com`,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      password: process.env.SUPABASE_JWT_SECRET!,
+    });
+
+    if (signinResult.error) {
+      const signupResult = await supabase.auth.signUp({
+        email: `${auth0Session.user.sub}@email.com`,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        password: process.env.SUPABASE_JWT_SECRET!,
+      });
+
+      session = signupResult.data.session;
+    } else {
+      session = signinResult.data.session;
     }
 
     return {
       props: {
-        messages: all.data?.map((row) => ({
-          user: row.address,
-          message: row.content,
-        })),
         authorized,
+        session,
+        auth0Token: auth0Session.user.accessToken,
       },
     };
   },
