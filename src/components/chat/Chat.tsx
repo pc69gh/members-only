@@ -60,7 +60,7 @@ export const Chat = ({
         hidden: !chatVisible,
       })}
     >
-      <Draggable defaultPosition={{ x: 220, y: 150 }} handle='.window-title '>
+      <Draggable defaultPosition={{ x: 0, y: 0 }} handle='.window-title '>
         <Window className='window resize' shadow>
           <WindowHeader className='window-title flex justify-between'>
             <span>Bread Chat.exe</span>
@@ -74,9 +74,12 @@ export const Chat = ({
             </div>
           </WindowHeader>
 
-          <WindowContent className='w-[600px]'>
-            <ChatWindow messages={rows} bucket={bucket} />
-            <form className='mt-2 flex space-x-2' onSubmit={sendMessage}>
+          <WindowContent className='flex h-[80vh] w-screen flex-col sm:w-[600px]'>
+            <ChatWindow messages={rows} bucket={bucket} className='grow' />
+            <form
+              className='mt-2 flex h-8 grow-0 space-x-2'
+              onSubmit={sendMessage}
+            >
               <input ref={inputRef} className='shadow-win95 w-full px-2' />
               <Button type='submit'>Send</Button>
               <UploadAttachmentButton

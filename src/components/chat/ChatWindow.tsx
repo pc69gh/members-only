@@ -7,9 +7,11 @@ import { Message } from '@/components/chat/Message';
 export const ChatWindow = ({
   messages,
   bucket,
+  className,
 }: {
   messages?: MessageType[];
   bucket: string;
+  className?: string;
 }) => {
   const textArea = createRef<HTMLDivElement>();
   useEffect(() => {
@@ -20,7 +22,7 @@ export const ChatWindow = ({
   return (
     <div
       ref={textArea}
-      className='shadow-win95 flex h-[400px] flex-col space-y-1 overflow-y-scroll bg-white px-3 py-2'
+      className={`shadow-win95 flex h-[70%] flex-col space-y-1 overflow-y-scroll bg-white px-3 py-2 ${className}`}
     >
       {messages?.map((message, i) => (
         <div key={i}>
