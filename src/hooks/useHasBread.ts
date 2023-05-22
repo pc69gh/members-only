@@ -5,7 +5,7 @@ import { InjectedConnector } from 'wagmi/connectors/injected';
 
 import { getTokenBalance } from '@/lib/zdk';
 
-export const useHasLobster = () => {
+export const useHasBread = () => {
   const [gotLawb, tellMeYouGotsLawb] = useState(false);
   const { address, isConnected } = useAccount();
   const { user: auth0User, error, isLoading } = useUser();
