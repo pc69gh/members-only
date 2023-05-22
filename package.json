@@ -36,6 +36,7 @@
     "react-dom": "^18.2.0",
     "react-draggable": "^4.4.5",
     "react-icons": "^4.8.0",
+    "react-new-window": "^1.0.1",
     "react95": "^4.0.0",
     "styled-components": "^5.3.9",
     "tailwind-merge": "^1.10.0",

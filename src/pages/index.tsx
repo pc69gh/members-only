@@ -60,7 +60,7 @@ const App = ({
         <GlobalStyles />
         <ThemeProvider theme={original}>
           {!authorized ? (
-            <BSOD message='you have no $bread, $cinnabunz or $lawb. please act accordingly.' />
+            <BSOD message='you have no $lawbsters.' />
           ) : (
             <Layout>
               <Chat type='bread' auth0Token={auth0Token} />

@@ -5,8 +5,8 @@ import { InjectedConnector } from 'wagmi/connectors/injected';
 
 import { getTokenBalance } from '@/lib/zdk';
 
-export const useHasBread = () => {
-  const [hasBread, setHasBread] = useState(false);
+export const useHasLobster = () => {
+  const [gotLawb, tellMeYouGotsLawb] = useState(false);
   const { address, isConnected } = useAccount();
   const { user: auth0User, error, isLoading } = useUser();
   const { connect } = useConnect({
@@ -22,12 +22,11 @@ export const useHasBread = () => {
     (async () => {
       if (error || isLoading || !auth0User || !auth0User.nickname) return;
       const { tokens } = await getTokenBalance(auth0User.nickname, [
-        '0x135c4e5e427ebed0f8bf7966cec4117b1cae2137',
-        '0x48ba3ba473a8557496d62e349993b8b00c8041fb',
+        '0x0ef7bA09C38624b8E9cc4985790a2f5dBFc1dC42',
       ]);
 
       if (tokens.nodes.length > 0) {
-        setHasBread(true);
+        tellMeYouGotsLawb(true);
       }
     })();
 
@@ -36,5 +35,5 @@ export const useHasBread = () => {
     };
   }, [address, auth0User, error, isConnected, isLoading]);
 
-  return hasBread;
+  return gotLawb;
 };
