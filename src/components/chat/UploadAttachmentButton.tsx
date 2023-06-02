@@ -47,7 +47,7 @@ export default function UploadAttachmentButton({
         ref={uploadRef}
         type='file'
         id='single'
-        accept='image/*'
+        accept='image/*,video/*,audio/*'
         onChange={onUpload}
         disabled={loading}
       />

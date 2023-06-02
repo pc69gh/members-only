@@ -52,7 +52,7 @@ export const Message = ({
   if (isLoading || error) return null;
 
   return (
-    <div className='flex items-end space-x-2 bg-black/70 p-1 text-lime-400'>
+    <div className='flex items-end space-x-2 bg-black/70 p-1 text-white'>
       <div
         className={classNames('font-bold leading-5', {
           'text-blue-500': user === auth0User?.nickname,

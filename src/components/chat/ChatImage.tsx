@@ -11,11 +11,14 @@ export default function ChatImage({
   size: number;
   bucket: string;
 }) {
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [media, setMedia] = useState<{
+    url: string;
+    type: string;
+  }>();
 
   const supabase = useSupabaseClient();
 
-  const downloadImage = async (path: string) => {
+  const downloadMedia = async (path: string) => {
     try {
       const { data, error } = await supabase.storage
         .from(bucket)
@@ -24,7 +27,10 @@ export default function ChatImage({
         throw error;
       }
       const url = URL.createObjectURL(data);
-      setImageUrl(url);
+      setMedia({
+        url,
+        type: data.type.split('/')[0],
+      });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       // eslint-disable-next-line no-console
@@ -33,19 +39,33 @@ export default function ChatImage({
   };
 
   useEffect(() => {
-    if (url) downloadImage(url);
+    if (url) downloadMedia(url);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url]);
 
-  if (!imageUrl) return null;
-
-  return (
-    <Image
-      src={imageUrl}
-      alt='chat image'
-      className='avatar image'
-      width={size}
-      height={size}
-    />
-  );
+  if (!media) return null;
+  switch (media.type) {
+    case 'image':
+      return (
+        <Image
+          src={media.url}
+          alt='chat image'
+          className='avatar image'
+          width={size}
+          height={size}
+        />
+      );
+    case 'video':
+      return (
+        <video
+          src={media.url}
+          className='avatar video'
+          width={size}
+          height={size}
+          controls
+        />
+      );
+    case 'audio':
+      return <audio src={media.url} className='avatar audio' controls />;
+  }
 }
