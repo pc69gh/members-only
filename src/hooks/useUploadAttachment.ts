@@ -1,13 +1,25 @@
 import { useUser as useAuth0User } from '@auth0/nextjs-auth0/client';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
-import { ChangeEvent, useCallback, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 
 export const useUploadAttachment = (bucket: string) => {
   const [uploading, setUploading] = useState<boolean>(false);
   const [attachment, setAttachment] = useState<string | null>(null);
+  const [done, setDone] = useState<boolean>(false);
   const supabase = useSupabaseClient();
 
   const { user: auth0User } = useAuth0User();
+
+  useEffect(() => {
+    if (done) {
+      setAttachment(null);
+      setDone(false);
+    }
+  }, [done]);
+
+  const doneHere = useCallback(() => {
+    setDone(true);
+  }, []);
 
   const uploadAttachment = useCallback(
     async function uploadAvatar(event: ChangeEvent<HTMLInputElement>) {
@@ -43,5 +55,5 @@ export const useUploadAttachment = (bucket: string) => {
     [auth0User?.nickname, bucket, supabase.storage]
   );
 
-  return { uploadAttachment, uploading, attachment };
+  return { uploadAttachment, uploading, attachment, doneHere };
 };

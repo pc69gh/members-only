@@ -2,11 +2,17 @@ import { useUser } from '@auth0/nextjs-auth0/client';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { RefObject, useCallback } from 'react';
 
-export const useSendMessage = (
-  inputRef: RefObject<HTMLInputElement>,
-  table: string,
-  attachment: string | null
-) => {
+export interface SendMessageProps {
+  inputRef: RefObject<HTMLInputElement>;
+  type: string;
+  attachment: string | null;
+}
+
+export const useSendMessage = ({
+  inputRef,
+  type,
+  attachment,
+}: SendMessageProps) => {
   const supabase = useSupabaseClient();
   const { user: auth0User, error, isLoading } = useUser();
   return useCallback(
@@ -17,7 +23,7 @@ export const useSendMessage = (
       inputRef.current.value = '';
 
       (async () => {
-        const { error } = await supabase.from(table).insert([
+        const { error } = await supabase.from(type).insert([
           {
             content: inputValue,
             user_id: auth0User?.sub,
@@ -41,7 +47,7 @@ export const useSendMessage = (
       inputRef,
       isLoading,
       supabase,
-      table,
+      type,
     ]
   );
 };

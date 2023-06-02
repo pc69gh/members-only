@@ -17,10 +17,12 @@ export const ChatWindow = ({
   className?: string;
 }) => {
   const textArea = createRef<HTMLDivElement>();
+
   useEffect(() => {
     if (!textArea.current) return;
     textArea.current.scrollTop = textArea.current.scrollHeight;
-  }, [messages, textArea]);
+  }, [messages?.length, textArea]);
+
   const [bgPath, setBGPath] = useState<string | null>(null);
   const paint = useRecoilValue(crayonAtom);
 

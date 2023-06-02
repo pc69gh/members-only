@@ -5,6 +5,7 @@ import { useCallback, useRef, useState } from 'react';
 import Draggable from 'react-draggable';
 import {
   Button,
+  Frame,
   MenuList,
   MenuListItem,
   Window,
@@ -18,6 +19,7 @@ import { useCrayons } from '@/hooks/useCrayons';
 import { useSendMessage } from '@/hooks/useSendMessage';
 import { useUploadAttachment } from '@/hooks/useUploadAttachment';
 
+import ChatImage from '@/components/chat/ChatImage';
 import { ChatWindow } from '@/components/chat/ChatWindow';
 import UploadAttachmentButton from '@/components/chat/UploadAttachmentButton';
 import { useMenuContext } from '@/components/context/Menu';
@@ -35,9 +37,10 @@ export const Chat = ({
 
   const bucket = `${type}_attachments`;
 
-  const { uploadAttachment, uploading, attachment } =
+  const { uploadAttachment, uploading, attachment, doneHere } =
     useUploadAttachment(bucket);
-  const sendMessage = useSendMessage(inputRef, type, attachment);
+
+  const sendIt = useSendMessage({ inputRef, type, attachment });
 
   const { chatVisible, setChatVisible, setChatRunning } = useMenuContext();
   const { rows } = useChatSubscribe(type, auth0Token);
@@ -54,6 +57,14 @@ export const Chat = ({
       toggleEmote();
     },
     [getUp, toggleEmote]
+  );
+
+  const sendMessage = useCallback(
+    (form: React.FormEvent<HTMLFormElement>) => {
+      sendIt(form);
+      doneHere();
+    },
+    [doneHere, sendIt]
   );
 
   return (
@@ -78,6 +89,12 @@ export const Chat = ({
 
           <WindowContent className='flex h-[80vh] w-screen flex-col sm:w-[600px]'>
             <ChatWindow messages={rows} bucket={bucket} className='grow' />
+            {attachment && (
+              <Frame variant='well' className='p-1'>
+                <ChatImage url={attachment} size={50} bucket={bucket} />
+              </Frame>
+            )}
+
             <form
               className='mt-2 flex h-8 grow-0 space-x-2'
               onSubmit={sendMessage}
