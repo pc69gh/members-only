@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { AppBar, Button, MenuList, MenuListItem, Toolbar } from 'react95';
 
-import { useHasBread } from '@/hooks/useHasBread';
+import { useHasLawbster } from '@/hooks/useHasLawbster';
 
 import { useMenuContext } from '@/components/context/Menu';
 
@@ -14,7 +14,7 @@ export const Menu = () => {
   const { setChatVisible, chatVisible, chatRunning, setChatRunning } =
     useMenuContext();
 
-  const hasBread = useHasBread();
+  const hasLawbster = useHasLawbster();
 
   return (
     <>
@@ -42,22 +42,22 @@ export const Menu = () => {
                 style={{ fontWeight: 'bold' }}
               >
                 <Image
-                  src='/images/bread.png'
+                  src='/images/lawb/lawb1.png'
                   alt='bread'
                   style={{ width: '20px', marginRight: 6 }}
                   width={36}
                   height={25}
                 />
-                Bread Chat
+                Lawbsters Chat
               </Button>
             )}
           </div>
         </Toolbar>
       </AppBar>
       {open && (
-        <div className='absolute top-12'>
+        <div className='absolute top-12 z-10'>
           <MenuList>
-            {user && hasBread && (
+            {user && hasLawbster && (
               <MenuListItem
                 onClick={() => {
                   setChatRunning(true);
@@ -65,13 +65,13 @@ export const Menu = () => {
                 }}
               >
                 <Image
-                  src='/images/bread.png'
+                  src='/images/lawb/lawb1.png'
                   alt='bread'
                   style={{ width: '20px', marginRight: 6 }}
                   width={36}
                   height={25}
                 />
-                Bread Chat
+                Lawbster Chat
               </MenuListItem>
             )}
 

@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
-import NewWindow from 'react-new-window';
 
 export const BSOD = ({ message }: { message: string }) => {
   const [typed, setTyped] = useState('');
   const [continue_, setContinue] = useState(false);
-  const [rocked, kickRocks] = useState(false);
+  const [_rocked, kickRocks] = useState(false);
   useEffect(() => {
     // type chars into state at random intervals
     const chars = message.split('');
@@ -33,13 +32,13 @@ export const BSOD = ({ message }: { message: string }) => {
     });
   }, [continue_]);
 
-  if (rocked) {
-    return (
-      <>
-        <NewWindow url='https://www.youtube.com/watch?v=n4QSYx4wVQg' />
-      </>
-    );
-  }
+  // if (rocked) {
+  //   return (
+  //     <>
+  //       <NewWindow url='https://www.youtube.com/watch?v=n4QSYx4wVQg' />
+  //     </>
+  //   );
+  // }
 
   return (
     <div className='flex h-screen w-full flex-col items-center justify-center bg-[#0000EE] text-center text-white'>

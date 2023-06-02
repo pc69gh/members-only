@@ -13,8 +13,9 @@ import {
 } from 'react95';
 
 import { useChatSubscribe } from '@/hooks/useChatSubscribe';
+// import { useSetEmoji } from '@/hooks/useSetEmoji';
+import { useCrayons } from '@/hooks/useCrayons';
 import { useSendMessage } from '@/hooks/useSendMessage';
-import { useSetEmoji } from '@/hooks/useSetEmoji';
 import { useUploadAttachment } from '@/hooks/useUploadAttachment';
 
 import { ChatWindow } from '@/components/chat/ChatWindow';
@@ -40,18 +41,19 @@ export const Chat = ({
 
   const { chatVisible, setChatVisible, setChatRunning } = useMenuContext();
   const { rows } = useChatSubscribe(type, auth0Token);
-  const setEmoji = useSetEmoji(inputRef);
+  // const boilingPot = useSetEmoji(inputRef);
+  const getUp = useCrayons();
 
   const toggleEmote = useCallback(() => {
     setEmoteOpen((prev) => !prev);
   }, []);
 
-  const addEmoji = useCallback(
-    (emoji: string) => {
-      setEmoji(emoji);
+  const thisFuckingLawb = useCallback(
+    (wallArt: number) => {
+      getUp(wallArt);
       toggleEmote();
     },
-    [setEmoji, toggleEmote]
+    [getUp, toggleEmote]
   );
 
   return (
@@ -63,7 +65,7 @@ export const Chat = ({
       <Draggable defaultPosition={{ x: 0, y: 0 }} handle='.window-title '>
         <Window className='window resize' shadow>
           <WindowHeader className='window-title flex justify-between'>
-            <span>Bread Chat.exe</span>
+            <span>Lawbster Chat.exe</span>
             <div className='flex space-x-1'>
               <Button size='sm' onClick={() => setChatVisible(false)}>
                 <MinusSmallIcon className='h-5 w-5' />
@@ -102,7 +104,7 @@ export const Chat = ({
                 </Button>
                 {emoteOpen && (
                   <div className='absolute top-10'>
-                    <MenuList style={{ width: '40px' }}>
+                    {/* <MenuList style={{ width: '40px' }}>
                       {['bread', 'bun'].map((emoji) => (
                         <MenuListItem
                           onClick={() => addEmoji(emoji)}
@@ -112,6 +114,23 @@ export const Chat = ({
                           <Image
                             src={`/images/${emoji}.png`}
                             alt={emoji}
+                            width={20}
+                            height={20}
+                            className='inline-block cursor-pointer'
+                          />
+                        </MenuListItem>
+                      ))}
+                    </MenuList> */}
+                    <MenuList style={{ width: '40px' }}>
+                      {[1, 2, 3, 4, 5].map((whichFuckingLawb) => (
+                        <MenuListItem
+                          onClick={() => thisFuckingLawb(whichFuckingLawb)}
+                          style={{ padding: 0, justifyContent: 'center' }}
+                          key={whichFuckingLawb}
+                        >
+                          <Image
+                            src={`/images/lawb/lawb${whichFuckingLawb}.png`}
+                            alt={`lawb-${whichFuckingLawb}`}
                             width={20}
                             height={20}
                             className='inline-block cursor-pointer'

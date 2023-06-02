@@ -1,14 +1,12 @@
-import { useUser } from '@auth0/nextjs-auth0/client';
 import { useEffect, useState } from 'react';
 import { useAccount, useConnect } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 
 import { getTokenBalance } from '@/lib/zdk';
 
-export const useHasBread = () => {
-  const [gotLawb, tellMeYouGotsLawb] = useState(false);
+export const useHasLawbster = () => {
+  const [hasLawbster, setHasLawbster] = useState(false);
   const { address, isConnected } = useAccount();
-  const { user: auth0User, error, isLoading } = useUser();
   const { connect } = useConnect({
     connector: new InjectedConnector(),
   });
@@ -19,21 +17,22 @@ export const useHasBread = () => {
   }, []);
 
   useEffect(() => {
+    if (!isConnected || !address) return;
+
     (async () => {
-      if (error || isLoading || !auth0User || !auth0User.nickname) return;
-      const { tokens } = await getTokenBalance(auth0User.nickname, [
-        '0x0ef7bA09C38624b8E9cc4985790a2f5dBFc1dC42',
+      const { tokens } = await getTokenBalance(address, [
+        '0x0ef7ba09c38624b8e9cc4985790a2f5dbfc1dc42',
       ]);
 
       if (tokens.nodes.length > 0) {
-        tellMeYouGotsLawb(true);
+        setHasLawbster(true);
       }
     })();
 
     return () => {
       void 0;
     };
-  }, [address, auth0User, error, isConnected, isLoading]);
+  }, [address, isConnected]);
 
-  return gotLawb;
+  return hasLawbster;
 };

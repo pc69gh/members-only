@@ -64,7 +64,7 @@ const App = ({
           ) : (
             <Layout>
               <Chat type='bread' auth0Token={auth0Token} />
-              {/* <Chat type='lawb' /> */}
+              {/* <Chat type='bread' /> */}
             </Layout>
           )}
         </ThemeProvider>

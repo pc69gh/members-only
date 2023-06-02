@@ -9,6 +9,8 @@ const client = createClient({
   provider: getDefaultProvider(),
 });
 
+import { RecoilRoot } from 'recoil';
+
 import '@/styles/globals.css';
 // !STARTERCONF This is for demo purposes, remove @/styles/colors.css import immediately
 import '@/styles/colors.css';
@@ -20,13 +22,15 @@ import '@/styles/colors.css';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <CookiesProvider>
-      <WagmiConfig client={client}>
-        <UserProvider>
-          <Component {...pageProps} />
-        </UserProvider>
-      </WagmiConfig>
-    </CookiesProvider>
+    <RecoilRoot>
+      <CookiesProvider>
+        <WagmiConfig client={client}>
+          <UserProvider>
+            <Component {...pageProps} />
+          </UserProvider>
+        </WagmiConfig>
+      </CookiesProvider>
+    </RecoilRoot>
   );
 }
 
