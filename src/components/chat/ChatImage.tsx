@@ -44,28 +44,30 @@ export default function ChatImage({
   }, [url]);
 
   if (!media) return null;
-  switch (media.type) {
-    case 'image':
-      return (
-        <Image
-          src={media.url}
-          alt='chat image'
-          className='avatar image'
-          width={size}
-          height={size}
-        />
-      );
-    case 'video':
-      return (
-        <video
-          src={media.url}
-          className='avatar video'
-          width={size}
-          height={size}
-          controls
-        />
-      );
-    case 'audio':
-      return <audio src={media.url} className='avatar audio' controls />;
+
+  if (media.type === 'image') {
+    return (
+      <Image
+        src={media.url}
+        alt='chat image'
+        className='avatar image'
+        width={size}
+        height={size}
+      />
+    );
+  } else if (media.type === 'video') {
+    return (
+      <video
+        src={media.url}
+        className='avatar video'
+        width={size}
+        height={size}
+        controls
+      />
+    );
+  } else if (media.type === 'audio') {
+    return <audio src={media.url} className='avatar audio' controls />;
   }
+
+  return null;
 }
