@@ -24,6 +24,11 @@ export const Message = ({
 
     return message
       .replace(new RegExp(`:(${emojis}):`, 'g'), ' :$1: ')
+      .replace(
+        // eslint-disable-next-line no-useless-escape
+        /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/g,
+        '<a target="_blank" href="$1">$1</a>'
+      )
       .match(new RegExp(`(\\s:(${emojis}):\\s)|(\\S+)|(\\s+)`, 'g'))
       ?.map((match, i) => {
         if (new RegExp(`^\\s?:(${emojis}){1}:\\s?$`).test(match)) {
@@ -52,7 +57,7 @@ export const Message = ({
   if (isLoading || error) return null;
 
   return (
-    <div className='flex items-end space-x-2 bg-black/70 p-1 text-white'>
+    <div className='flex items-end space-x-2 bg-black/80 p-1 text-white'>
       <div
         className={classNames('font-bold leading-5', {
           'text-blue-500': user === auth0User?.nickname,
@@ -62,7 +67,7 @@ export const Message = ({
       </div>
       <div className='flex flex-col space-y-2'>
         <ChatMedia url={attachment} size={200} bucket={bucket} />
-        {parsed && <div className='flex h-[20px] items-center'>{parsed}</div>}
+        {parsed && <div className='flex items-center'>{parsed}</div>}
       </div>
     </div>
   );
