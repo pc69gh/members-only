@@ -3,9 +3,11 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { AppBar, Button, MenuList, MenuListItem, Toolbar } from 'react95';
 
-import { useHasLawbster } from '@/hooks/useHasLawbster';
+import { useHasToken } from '@/hooks/useHasToken';
 
 import { useMenuContext } from '@/components/context/Menu';
+
+import { ADDRESS } from '@/constant/constants';
 
 export const Menu = () => {
   const [open, setOpen] = useState(false);
@@ -14,7 +16,7 @@ export const Menu = () => {
   const { setChatVisible, chatVisible, chatRunning, setChatRunning } =
     useMenuContext();
 
-  const hasLawbster = useHasLawbster();
+  const hasMixtape = useHasToken(ADDRESS.MIXTAPE);
 
   return (
     <>
@@ -57,7 +59,7 @@ export const Menu = () => {
       {open && (
         <div className='absolute top-12 z-10'>
           <MenuList>
-            {user && hasLawbster && (
+            {user && hasMixtape && (
               <MenuListItem
                 onClick={() => {
                   setChatRunning(true);
