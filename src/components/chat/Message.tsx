@@ -2,6 +2,7 @@ import { useUser } from '@auth0/nextjs-auth0/client';
 import classNames from 'classnames';
 import Image from 'next/image';
 import { useMemo } from 'react';
+import ReactHtmlParser from 'react-html-parser';
 
 import ChatMedia from '@/components/chat/ChatMedia';
 
@@ -57,7 +58,7 @@ export const Message = ({
   if (isLoading || error) return null;
 
   return (
-    <div className='flex items-end space-x-2 bg-black/80 p-1 text-white'>
+    <div className='flex items-start space-x-2 bg-black/80 p-1 text-white'>
       <div
         className={classNames('font-bold leading-5', {
           'text-blue-500': user === auth0User?.nickname,
@@ -67,7 +68,13 @@ export const Message = ({
       </div>
       <div className='flex flex-col space-y-2'>
         <ChatMedia url={attachment} size={200} bucket={bucket} />
-        {parsed && <div className='flex items-center'>{parsed}</div>}
+        {parsed && (
+          <div className='flex items-center'>
+            {ReactHtmlParser(
+              `<div>${parsed.join('') as unknown as string}</div>`
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
