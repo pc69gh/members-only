@@ -42,13 +42,13 @@ export const Menu = () => {
                 style={{ fontWeight: 'bold' }}
               >
                 <Image
-                  src='/images/lawb/lawb1.png'
+                  src='/images/mixtape/image2.png'
                   alt='bread'
                   style={{ width: '20px', marginRight: 6 }}
                   width={36}
                   height={25}
                 />
-                Lawbsters Chat
+                Mixtape Chat
               </Button>
             )}
           </div>
@@ -65,13 +65,13 @@ export const Menu = () => {
                 }}
               >
                 <Image
-                  src='/images/lawb/lawb1.png'
+                  src='/images/mixtape/image2.png'
                   alt='bread'
                   style={{ width: '20px', marginRight: 6 }}
                   width={36}
                   height={25}
                 />
-                Lawbster Chat
+                Mixtape Chat
               </MenuListItem>
             )}
 

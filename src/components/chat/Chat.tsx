@@ -19,7 +19,7 @@ import { useCrayons } from '@/hooks/useCrayons';
 import { useSendMessage } from '@/hooks/useSendMessage';
 import { useUploadAttachment } from '@/hooks/useUploadAttachment';
 
-import ChatImage from '@/components/chat/ChatImage';
+import ChatMedia from '@/components/chat/ChatMedia';
 import { ChatWindow } from '@/components/chat/ChatWindow';
 import UploadAttachmentButton from '@/components/chat/UploadAttachmentButton';
 import { useMenuContext } from '@/components/context/Menu';
@@ -51,7 +51,7 @@ export const Chat = ({
     setEmoteOpen((prev) => !prev);
   }, []);
 
-  const thisFuckingLawb = useCallback(
+  const thisLawb = useCallback(
     (wallArt: number) => {
       getUp(wallArt);
       toggleEmote();
@@ -76,7 +76,7 @@ export const Chat = ({
       <Draggable defaultPosition={{ x: 0, y: 0 }} handle='.window-title '>
         <Window className='window resize' shadow>
           <WindowHeader className='window-title flex justify-between'>
-            <span>Lawbster Chat.exe</span>
+            <span>PC TAPE VOL.1</span>
             <div className='flex space-x-1'>
               <Button size='sm' onClick={() => setChatVisible(false)}>
                 <MinusSmallIcon className='h-5 w-5' />
@@ -91,7 +91,7 @@ export const Chat = ({
             <ChatWindow messages={rows} bucket={bucket} className='grow' />
             {attachment && (
               <Frame variant='well' className='p-1'>
-                <ChatImage url={attachment} size={50} bucket={bucket} />
+                <ChatMedia url={attachment} size={50} bucket={bucket} />
               </Frame>
             )}
 
@@ -139,15 +139,15 @@ export const Chat = ({
                       ))}
                     </MenuList> */}
                     <MenuList style={{ width: '40px' }}>
-                      {[1, 2, 3, 4, 5].map((whichFuckingLawb) => (
+                      {[1, 2].map((whichLawb) => (
                         <MenuListItem
-                          onClick={() => thisFuckingLawb(whichFuckingLawb)}
+                          onClick={() => thisLawb(whichLawb)}
                           style={{ padding: 0, justifyContent: 'center' }}
-                          key={whichFuckingLawb}
+                          key={whichLawb}
                         >
                           <Image
-                            src={`/images/lawb/lawb${whichFuckingLawb}.png`}
-                            alt={`lawb-${whichFuckingLawb}`}
+                            src={`/images/mixtape/image${whichLawb}.png`}
+                            alt={`lawb-${whichLawb}`}
                             width={20}
                             height={20}
                             className='inline-block cursor-pointer'

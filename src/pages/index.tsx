@@ -60,10 +60,10 @@ const App = ({
         <GlobalStyles />
         <ThemeProvider theme={original}>
           {!authorized ? (
-            <BSOD message='you have no $lawbsters.' />
+            <BSOD message='you do not have a PC MIXTAPE.' />
           ) : (
             <Layout>
-              <Chat type='bread' auth0Token={auth0Token} />
+              <Chat type='mixtape' auth0Token={auth0Token} />
               {/* <Chat type='bread' /> */}
             </Layout>
           )}

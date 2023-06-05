@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import Image from 'next/image';
 import { useMemo } from 'react';
 
-import ChatImage from '@/components/chat/ChatImage';
+import ChatMedia from '@/components/chat/ChatMedia';
 
 const emojis = ['bread', 'bun'].join('|');
 
@@ -61,7 +61,7 @@ export const Message = ({
         {user}
       </div>
       <div className='flex flex-col space-y-2'>
-        <ChatImage url={attachment} size={200} bucket={bucket} />
+        <ChatMedia url={attachment} size={200} bucket={bucket} />
         {parsed && <div className='flex h-[20px] items-center'>{parsed}</div>}
       </div>
     </div>

@@ -10,7 +10,10 @@ const afterCallback = async (_: unknown, __: unknown, session: Session) => {
   const exp = iat + 60 * 60 * 24;
 
   const { tokens } = await getTokenBalance(session.user.nickname, [
-    '0x0ef7ba09c38624b8e9cc4985790a2f5dbfc1dc42',
+    '0xd0c4c3c6297f5bff0ff358d66483f8481a184236', // mixtape
+    // '0x0ef7ba09c38624b8e9cc4985790a2f5dbfc1dc42', // lobster
+    // '0x135c4e5e427ebed0f8bf7966cec4117b1cae2137', // bread
+    // '0x48ba3ba473a8557496d62e349993b8b00c8041fb', // bunz
   ]);
 
   const hasToken = tokens.nodes.length > 0;

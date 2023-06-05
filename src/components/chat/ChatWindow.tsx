@@ -26,10 +26,17 @@ export const ChatWindow = ({
   const [bgPath, setBGPath] = useState<string | null>(null);
   const paint = useRecoilValue(crayonAtom);
 
+  // useEffect(() => {
+  //   const drawing = paint || getDrawing();
+  //   if (drawing !== null) {
+  //     setBGPath(`/images/lawb/lawb${drawing}.png`);
+  //   }
+  // }, [paint]);
+
   useEffect(() => {
     const drawing = paint || getDrawing();
     if (drawing !== null) {
-      setBGPath(`/images/lawb/lawb${drawing}.png`);
+      setBGPath(`/images/mixtape/image${drawing}.png`);
     }
   }, [paint]);
 
@@ -37,7 +44,7 @@ export const ChatWindow = ({
     <div
       ref={textArea}
       className={classNames(
-        `shadow-win95 flex h-[70%] flex-col space-y-1 overflow-y-scroll px-3 py-2 ${className} bg-cover bg-blend-lighten`,
+        `shadow-win95 flex h-[70%] flex-col space-y-1 overflow-y-scroll px-3 py-2 ${className} bg-cover bg-center bg-blend-lighten`,
         {
           'bg-white': bgPath === null,
         }

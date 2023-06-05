@@ -24,12 +24,14 @@ export const BSOD = ({ message }: { message: string }) => {
 
   useEffect(() => {
     if (!continue_) return;
-    window.addEventListener('keydown', () => {
+    const send = () => {
       kickRocks(true);
 
       window.location.href =
-        'https://zora.co/collect/0x0ef7bA09C38624b8E9cc4985790a2f5dBFc1dC42';
-    });
+        'https://zora.co/collect/0xd0c4c3c6297f5bff0ff358d66483f8481a184236';
+    };
+    window.addEventListener('keydown', send);
+    window.addEventListener('touch', send);
   }, [continue_]);
 
   // if (rocked) {
